@@ -8,6 +8,7 @@ var bodyParser = require('body-parser');
 var routes = require('./routes/index');
 var users = require('./routes/users');
 var ejs = require('ejs');
+var session = require('express-session');
 
 var app = express();
 
@@ -26,12 +27,31 @@ app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
+app.use(session({ resave: true,
+  saveUninitialized: true,
+  secret: 'uwotm8' }));
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.use('/', routes);
-app.use('/users', users);
 
+app.use(function(req, res, next){
+  res.locals.user = req.session.user;
+  next();
+});
+
+
+
+
+//app.use('/', routes);
+//app.use('/users', users);
+
+
+app.get('/', routes.index);
 app.get('/login', routes.login);
+app.post('/login', routes.doLogin);
+app.get('/logout', routes.logout);
+app.get('/home', routes.home);
+
+
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
