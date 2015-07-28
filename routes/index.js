@@ -1,15 +1,24 @@
-var express = require('express');
-var router = express.Router();
-
-/* GET home page. */
-router.get('/', function(req, res, next) {
-  res.render('index', { title: 'Express' });
-});
-
-router.login=    function(req, res) {
-  res.render('login', {title: 'ÓÃ»§µÇÂ½'});
+exports.index = function(req, res){
+  res.render('index', { title: 'Index' });
 };
-
-
-
-module.exports = router;
+exports.login = function(req, res){
+  res.render('login', { title: 'ç™»å½•'});
+};
+exports.doLogin = function(req, res){
+  var user={
+    username:'admin',
+    password:'admin'
+  }
+  if(req.body.username===user.username && req.body.password===user.password){
+    req.session.user=user;
+    res.redirect('/home');
+  }
+  res.redirect('/login');
+};
+exports.logout = function(req, res){
+  req.session.user=null;
+  res.redirect('/');
+};
+exports.home = function(req, res){
+  res.render('home', { title: 'Home'});
+};
